@@ -100,8 +100,71 @@ delivered in each customer state, and show it in a bar chart.
 
 - Explain your findings.
 ```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+
+## dataset
+order = read.csv("orders.csv")
+customer = read.csv("customers.csv")
+
+## Viewing the dataset
+View(order)
+View(customer)
+
+## Checking na values
+colSums(is.na(order))
+colSums(is.na(customer))
+
+# order status percentage for all status
+orderStatPercent = order %>% 
+                      count(order_status) %>%
+                      mutate(percentage = n / sum(n) * 100)
+orderStatPercent 
+
+# Visualise with barchart
+ggplot (orderStatPercent) +
+  geom_col(aes(order_status, percentage))
+
+# order status percentage for status that are not delivered
+orderStatPerNotDel = order %>% 
+                      summarise(
+                        notDelivered = sum(order_status != "delivered"), 
+                        sumsOrder = nrow(order),
+                        percentage = notDelivered / sumsOrder * 100
+                      )
+orderStatPerNotDel
+
+## Join orders.csv and customers.csv and checking 
+orderCus = order %>% 
+            inner_join(
+              customer, 
+              by = "customer_id"
+            ) %>%
+            select(order_status, customer_state)
+
+orderCusPerNotDel = orderCus %>% 
+                    group_by(customer_state) %>%
+                    summarise(
+                      notDelivered = sum(order_status != "delivered"), 
+                      sumsOrder = nrow(order),
+                      percentage = notDelivered / sumsOrder * 100
+                    )
+orderCusPerNotDel
+
+## Visualise in the bar chart 
+ggplot(orderCusPerNotDel) +
+  geom_col(aes(customer_state, percentage))
 
 ```
+### Explanation 
+The percentage of the delivered is approximately 97 percent, the least percentage of the undelivered section falls on approve at about 0.002 percent. Followed by the bar plot show a significant different between the number delivered and undelivered order.
+
+The percentage of overall not delivered status is about 2.97 percent.
+
+The percentage of customer state that order got the most of the undelivered product located in SP and the least undelivered was AC
+
+
 
 ### Task 3 Payment Methods 
 - Analyse the usage frequency of each payment type (number and percentage of
