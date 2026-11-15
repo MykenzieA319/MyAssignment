@@ -36,6 +36,82 @@ report the mean and median price.
 - Explain your Findings
 
 ```{r setup, include=FALSE}
+library (ggplot2)
+library (tidyverse)
+library (dplyr)
+
+## dataset
+orderItems = read.csv("order_items.csv")
+products = read.csv("products.csv")
+getwd() ## checking the directory
+list.files() ## listing file inside the directory
+
+
+## Viewing the table
+View(orderItems)
+View(products)
+
+## Checking na values 
+colSums(is.na(products))
+colSums(is.na(orderItems))
+
+# Order item price histogram
+ggplot(orderItems) +
+  geom_histogram(aes(price), bins = 30)
+
+# Mean and Median of the price
+meanPrice = mean(orderItems$price)
+cat("The mean price is", meanPrice, "\n")
+medianPrice = median(orderItems$price)
+cat("The median price is", medianPrice)
+
+## joining orderItems and Products 
+orderProduct = orderItems %>%
+                left_join(
+                  products,
+                  by = "product_id") %>%
+                select(product_weight_g, freight_value)
+
+## Scatter plot
+ggplot(orderProduct) +
+  geom_point(aes(product_weight_g, freight_value))
+
+### Explanation 
+```
+
+#### Explanation 
+- The mean of the price is approximately 120.65. 
+
+- The mean  of the price is around 74.99.
+
+- The mean of the price is higher than the median, this means that the high price of the product may be pulling the average upwards.
+
+The histogram show indication that most product are leaning towards lower prices while there is only small amount of product that is in very high priced.
+The relationship between orderItems and products are product weight and freight values, we want to see if thee freight values depends on the product weight or not.
+The scatter plot show no linear relationship pattern. In conclusion, there is no  significant relationship between the product weight and the freight value, the product weight does not affect the freight value.
+
+### Task 2 Orders That Were Not Delivered
+- Count the number of orders in each order status and the percentage of all orders,
+and visualise this with a bar chart. What percentage of orders were not delivered,
+that is, orders whose status is anything other than delivered?
+
+- Join orders.csv and customers.csv, calculate the percentage of orders not
+delivered in each customer state, and show it in a bar chart.
+
+- Explain your findings.
+```{r}
+
+```
+
+### Task 3 Payment Methods 
+- Analyse the usage frequency of each payment type (number and percentage of
+payments), and visualise it with a bar chart.
+
+- Compare the payment values of the different payment types with a boxplot. Which
+payment types are used for larger or smaller amounts?
+
+- Explain your findings.
+```{r}
 
 ```
 
