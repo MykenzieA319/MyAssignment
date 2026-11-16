@@ -152,6 +152,7 @@ orderCusPerNotDel = orderCus %>%
                     )
 orderCusPerNotDel
 
+
 ## Visualise in the bar chart 
 ggplot(orderCusPerNotDel) +
   geom_col(aes(customer_state, percentage))
@@ -175,6 +176,64 @@ payment types are used for larger or smaller amounts?
 
 - Explain your findings.
 ```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+
+## dataset 
+payment = read.csv("payments.csv")
+
+## Viewing the dataset 
+View(payment)
+
+# payment percentage of each payment type 
+payment %>%
+  count(payment_type)
+
+
+payTypePercent = payment %>% 
+                  count(payment_type) %>%
+                  mutate(
+                    percentage = n / sum(n) * 100
+                  ) 
+
+payTypePercent
+
+### excluding not_define payment type because it does not have any values
+payTypePercent = payment %>% 
+                  filter(payment_type != "not_defined") %>%
+                  count(payment_type) %>%
+                  mutate(
+                    percentage = n / sum(n) * 100
+                  ) 
+
+payTypePercent
+
+# Visualise using barplot 
+ggplot(payTypePercent) +
+  geom_col(aes(payment_type, percentage))
+
+
+## Compare the payment values of the different payment types with a boxplot. Which
+## payment types are used for larger or smaller amounts?
+View(payment %>%
+  count(payment_type))
+
+ggplot(payment)+
+  geom_boxplot(aes(payment_type, payment_value))
+
+ggplot(payment)+
+  geom_boxplot(aes(payment_type, payment_value)) +
+  scale_y_log10()
 
 ```
+
+## Explanation 
+
+from the frequency of the payment type we can see that most people prefer to use credit card the most 
+in the box plot we can see that most people who pays the most is in the credit card 
+the reason why these is so many outliers is because the gap between the amount that people pay is so high 
+the most transaction made by the people are concentrated the most in lower value 
+the highest max transaction is 13664 in credit card and the least max is 0 in not define 
+which means the payment method are not define so does the total amount they pay 
 
