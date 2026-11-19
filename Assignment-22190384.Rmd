@@ -85,6 +85,7 @@ orderProduct = orderItems %>%
                 select(product_weight_g, freight_value) %>% 
 ## dropping the missing value because they cannot be used to examine the relationship  
 drop_na(product_weight_g, freight_value)
+orderProduct
 
 # Viewing orderProduct
 View(orderProduct)
@@ -100,7 +101,6 @@ ggplot(orderProduct) +
 #### Explanation 
 - The mean of the price is approximately 120.65. 
 - The mean  of the price is around 74.99.
-
 - The mean of the price is higher than the median, this means that the high price of the product may be pulling the average upwards.
 
 The histogram show indication that most product are leaning towards lower prices while there is only small amount of product that is in very high priced.
@@ -113,13 +113,25 @@ The scatter plot show no linear relationship pattern. In conclusion, there is no
 
 ### Task 2 Orders That Were Not Delivered
 - Count the number of orders in each order status and the percentage of all orders,
-and visualise this with a bar chart. What percentage of orders were not delivered,
+and visualize this with a bar chart. 
+What percentage of orders were not delivered,
 that is, orders whose status is anything other than delivered?
 
 - Join orders.csv and customers.csv, calculate the percentage of orders not
 delivered in each customer state, and show it in a bar chart.
 
 - Explain your findings.
+
+Rationale:
+In task the first thing i was given is to count the number of orders in each order status, in which i first view the tables first to observed the attribute using View(), and checking if there is any missing values with colSums(is.na()). i use tidyverse and dplyr (just in case my computer block any .dll files in tidyverse).
+
+in every data i will check if there is any NA values or not 
+
+After counting it i convert it into a percentage(orderStatPercent) to examine the distribution of percentage across each state, i visualized the distribution with a bar chart(geom_col = because it is between a categorical variable and numerical variable). I choose to add numbers off percentage of the delivered order and the undelivered for all orders.
+
+The join orders and customers i was tasked to calculate the percentage of the undelivered order in each state
+in which i also use geom_col and grouping the order by state and then calculate the percentage for each state so that there is no biased distribution.
+
 ```{r}
 library(ggplot2)
 library(tidyverse)
@@ -135,26 +147,40 @@ View(customer)
 
 ## Checking na values
 colSums(is.na(order))
-colSums(is.na(customer))
+colSums(is.na(customer)) ## because there is no NA then we don't need to drop any NA values
 
-# order status percentage for all status
+## counting number of orders 
+orderCountStat = order%>%
+  count(order_status)
+orderCountStat
+
+# order status percentage for each status
 orderStatPercent = order %>% 
                       count(order_status) %>%
                       mutate(percentage = n / sum(n) * 100)
 orderStatPercent 
 
-# Visualise with barchart
+# Visualize order status percentage with bar chart
 ggplot (orderStatPercent) +
   geom_col(aes(order_status, percentage))
 
-# order status percentage for status that are not delivered
-orderStatPerNotDel = order %>% 
+#  order status percentage for all status that are delivered 
+orderDelper = order %>% 
+            summarise(
+              Del = sum(order_status == "delivered"),
+              sumsOrder = nrow(order), 
+              percentage = Del / sumsOrder * 100
+              )
+orderDelper
+
+# order status percentage for all status that are not delivered
+orderNotDelper = order %>% 
                       summarise(
-                        notDelivered = sum(order_status != "delivered"), 
+                        notDel = sum(order_status != "delivered"), 
                         sumsOrder = nrow(order),
-                        percentage = notDelivered / sumsOrder * 100
+                        percentage = notDel / sumsOrder * 100
                       )
-orderStatPerNotDel
+orderNotDelper
 
 ## Join orders.csv and customers.csv and checking 
 orderCus = order %>% 
@@ -163,16 +189,31 @@ orderCus = order %>%
               by = "customer_id"
             ) %>%
             select(order_status, customer_state)
+orderCus
+
+# checking for na values 
+colSums(is.na(orderCus)) ## because there is no NA then we don't need to drop any NA values
+
+## Order percentage not delivered in each state
 
 orderCusPerNotDel = orderCus %>% 
                     group_by(customer_state) %>%
                     summarise(
-                      notDelivered = sum(order_status != "delivered"), 
-                      sumsOrder = nrow(order),
-                      percentage = notDelivered / sumsOrder * 100
-                    )
+                      notDel = sum(order_status != "delivered"), 
+                      sumsOrder = n(),
+                      percentage = notDel / sumsOrder * 100) 
+
 orderCusPerNotDel
 
+## Order percentage not delivered in each state
+orderCusPerDel = orderCus %>% 
+                    group_by(customer_state) %>%
+                    summarise(
+                      Del = sum(order_status == "delivered"), 
+                      sumsOrder = n(),
+                      percentage = Del / sumsOrder * 100) 
+
+orderCusPerDel
 
 ## Visualise in the bar chart 
 ggplot(orderCusPerNotDel) +
@@ -182,9 +223,11 @@ ggplot(orderCusPerNotDel) +
 ### Explanation 
 The percentage of the delivered is approximately 97 percent, the least percentage of the undelivered section falls on approve at about 0.002 percent. Followed by the bar plot show a significant different between the number delivered and undelivered order.
 
-The percentage of overall not delivered status is about 2.97 percent.
+The percentage of order status that are not delivered is about 2.97 percent.
 
-The percentage of customer state that order got the most of the undelivered product located in SP and the least undelivered was AC
+The percentage of customer state that order got the most of the undelivered product located in RR and the least undelivered was AC
+
+The distribution from the percentage was very biased because each state did not get the same amount of orders so a number from one state could lead to a higher percentage but very low undelivered order while other state low percentage but a very high undelivered order. 
 
 
 
