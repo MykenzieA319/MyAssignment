@@ -41,7 +41,7 @@ report the mean and median price.
 - Explain your Findings
 
 Rationale:
--  This task the first thing is we are asked to visualize the distribution of item price in order_item.csv program with a histogram in which i use ggplot to help me plot the histogram. Same thing with task two we were asked to use scatter plot and ggplot to visualized it.
+-  In this task the first thing is we are asked to visualize the distribution of item price in order_item.csv program with a histogram in which i use ggplot to help me plot the histogram. Same thing with task two we were asked to use scatter plot and ggplot to visualized it.
 
 - I use View to inspect the structure of the content
 - I use colSum(is.na()) to check whether if there is a missing value in each column
@@ -122,13 +122,13 @@ delivered in each customer state, and show it in a bar chart.
 - Explain your findings.
 
 Rationale:
-- In task the first thing i was given is to count the number of orders in each order status, in which i first view the tables first to observed the attribute using View(), and checking if there is any missing values with colSums(is.na()). i use tidyverse and dplyr (just in case my computer block any .dll files in tidyverse).
+- In this task the first thing i was given is to count the number of orders in each order status, in which i first view the tables first to observed the attribute using View(), and checking if there is any missing values with colSums(is.na()). i use tidyverse and dplyr (just in case my computer block any .dll files in tidyverse).
 
 - in every data i will check if there is any NA values or not 
 
 -  counting it i convert it into a percentage(orderStatPercent) to examine the distribution of percentage across each state, i visualized the distribution with a bar chart(geom_col = because it is between a categorical variable and numerical variable). I choose to add numbers off percentage of the delivered order and the undelivered for all orders.
 
--  join orders and customers i was tasked to calculate the percentage of the undelivered order in each state
+-  Join orders and customers i was tasked to calculate the percentage of the undelivered order in each state
 in which i also use geom_col and grouping the order by state and then calculate the percentage for each state so that there is no biased distribution.
 
 ```{r}
