@@ -67,7 +67,11 @@ colSums(is.na(orderItems))
 
 ##1.4 Order item price histogram
 ggplot(orderItems) +
-  geom_histogram(aes(price), bins = 30)
+  geom_histogram(aes(price), bins = 30) +
+  labs(
+    x = "Price",
+    title = " The Frequency Price"
+  )
 
 #1.5 Mean and Median of the price
 meanPrice = mean(orderItems$price)
@@ -93,7 +97,12 @@ colSums(is.na(orderProduct))
 
 ##2.4 Scatter plot
 ggplot(orderProduct) +
-  geom_point(aes(product_weight_g, freight_value))
+  geom_point(aes(product_weight_g, freight_value, color = freight_value)) +
+  labs(
+    x = "Product weight(g)",
+    y = "Freight value",
+    title = "Product vs Freight value"
+  )
 
 ```
 
@@ -102,13 +111,14 @@ ggplot(orderProduct) +
 - The mean  of the price is around 74.99.
 - The mean of the price is higher than the median, this means that the high price of the product may be pulling the average upwards.
 
-- The histogram show indication that most product are leaning towards lower prices while there is only small amount of product that is in very high priced.
+- The histogram show indication that most product are leaning towards lower prices while there is only small amount of product that is in very high priced, it shows indication that most order are in the lower price.
 
 - There is an indication that there is a product_weight_g that has no values (exactly 18 after joining) meaning we need to erase it because we need both values to examine the relationship, without the product weight the observations cannot provide a complete coordinates for the visualization.
 
 - The relationship attribute between order_items and products are product weight and freight values, we want to see if the freight values depends on the product weight or not.
 
 - The scatter plot show no linear relationship pattern. In conclusion, there is no  significant relationship between the product weight and the freight value, the product weight does not affect the freight value.
+
 
 ### Task 2 Orders That Were Not Delivered
 - Count the number of orders in each order status and the percentage of all orders,
@@ -161,7 +171,12 @@ orderStatPercent
 
 ##1.6 Visualize order status percentage with bar chart
 ggplot (orderStatPercent) +
-  geom_col(aes(order_status, percentage))
+  geom_col(aes(order_status, percentage))  +
+  labs(
+    x = "Order Status",
+    y = "Percentage",
+    title = "Order Status Percentages"
+  )
 
 ##1.7  order status percentage for all status that are delivered 
 orderDelper = order %>% 
@@ -216,7 +231,13 @@ orderCusPerDel
 
 ##2.5 Visualise in the bar chart 
 ggplot(orderCusPerNotDel) +
-  geom_col(aes(customer_state, percentage))
+  geom_col(aes(customer_state, percentage,  fill = factor(customer_state)))  +
+  labs(
+    x = "Customer state not delivered",
+    y = "Percentage",
+    fill = "Customer State",
+    title = "Percentage Of Customer State Order Not Delivered"
+  )
 
 ```
 ### Explanation 
@@ -249,7 +270,7 @@ For the first thing in the task is to count the frequency of each payment type a
 I will also check for any Na value.
 
 Visualizing the difference in payment types with payment values using a box plot and identify which payment types are used for larger or smaller amounts 
-```{r}
+```{r, warning = FALSE}
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
@@ -274,7 +295,7 @@ payment %>%
   summarise(
     total = n())
                   
-##5.1 payment percentage of each payment type 
+##5.1 Payment percentage of each payment type 
 payTypePercent = payment %>% 
                   count(payment_type) %>%
                   mutate(percentage = n / sum(n) * 100) 
@@ -286,7 +307,7 @@ payment %>%
   filter(payment_value == 0)%>%
   select(payment_type) ## from here we know that it is voucher and not_defined category 
 
-##7.1 excluding not_define payment type because it does not have any values of payments.
+##7.1  excluding not_define payment type because it does not have any values of payments (zero).
 payTypePercent = payment %>% 
                   filter(payment_type != "not_defined") %>%
                   count(payment_type) %>%
@@ -298,17 +319,34 @@ payTypePercent
 
 ##8.1 Visualize the percentage using bar plot 
 ggplot(payTypePercent) +
-  geom_col(aes(payment_type, percentage))
+  geom_col(aes(payment_type, percentage, fill = factor(payment_type)))  +
+  labs(
+    x = "Payment Type",
+    y = "Percentage",
+    fill = "Payment Type",
+    title = "Payment Type percentage"
+  )
+
 
 
 ##1.2 Compare the payment values of the different payment types with a box plot. Which payment types are used for larger or smaller amounts?
 ggplot(payment)+
-  geom_boxplot(aes(payment_type, payment_value))
+  geom_boxplot(aes(payment_type, payment_value))  +
+  labs(
+    x = "Payment Type",
+    y = "Paymnet Value",
+    title = "Distributuin of Payment Value with Paymnet Type"
+  )
 
 ##1.2 We use scale log to see a better visualization of the box plot (not flat)
 ggplot(payment)+
   geom_boxplot(aes(payment_type, payment_value)) +
-  scale_y_log10()
+  scale_y_log10()  +
+  labs(
+    x = "Payment Type",
+    y = "Paymnet Value",
+    title = "Distributuin of Payment Value with Paymnet Type"
+  )
 
 ##2.2 because the graphs has warning about producing infinite value that mean we need to remove the rows that produces zero only 
 
@@ -317,18 +355,20 @@ payment %>%
   filter(payment_value == 0)%>%
   select(payment_type) ## from here we know that it is voucher and not_defined category 
 
-##3.2 we remove the not define and voucher that contains 0  which cause the infinite value during the log transformation 
+##3.2 we remove the not define because not_define did not represent a identified payment method 
 paymentNot0 = payment %>% 
-                filter(
-                  (payment_type != "voucher" & payment_value != 0) | 
-                  (payment_type != "not_defined" & payment_value != 0))
+                filter (payment_type != "not_defined")
+
 
 ##4.2 Visualizing the final data 
 ggplot(paymentNot0)+
   geom_boxplot(aes(payment_type, payment_value)) +
-  scale_y_log10()
-
-
+  scale_y_log10()  +
+  labs(
+    x = "Payment Type",
+    y = "Paymnet Value",
+    title = "Distributuin of Payment Value with Paymnet Type" 
+  )
 ```
 
 ## Explanation
@@ -339,6 +379,8 @@ ggplot(paymentNot0)+
 
 - in the box plot we can see that most people who pays the most is in the credit card 
 the reason why these is so many outliers is because the gap between the amount that people pay is so high 
+
+- In the distribution i notice a some zero value in the voucher. However i decided not to remove any of the zero values because they still represent a valid transaction.
 
 - The most transaction made by the people are concentrated the most in lower value 
 the highest max value transaction amount is 13,664 recorded in credit card and the minimum is not_define at zero, but since we exclude not_define because it is not represent as an identifiable payment method, 
