@@ -32,8 +32,6 @@ retain a copy on its database for future plagiarism checking).
 
 Signature: ______________________________ Date: ______________
 
-## Dont Forget to explain the rationale later 
-
 ### Task 1 Product Prices and Shipping Cost
 - Visualize the distribution of item prices in order_items.csv with a histogram, and
 report the mean and median price.
@@ -43,7 +41,7 @@ report the mean and median price.
 - Explain your Findings
 
 Rationale:
-In this task the first thing is we are asked to visualize the distribution of item price in order_item.csv program with a histogram in which i use ggplot to help me plot the histogram. Same thing with task two we were asked to use scatter plot and ggplot to visualized it.
+-  This task the first thing is we are asked to visualize the distribution of item price in order_item.csv program with a histogram in which i use ggplot to help me plot the histogram. Same thing with task two we were asked to use scatter plot and ggplot to visualized it.
 
 - I use View to inspect the structure of the content
 - I use colSum(is.na()) to check whether if there is a missing value in each column
@@ -55,29 +53,29 @@ library (ggplot2)
 library (tidyverse)
 library (dplyr)
 
-## dataset
+##1.1 dataset
 orderItems = read.csv("order_items.csv")
 products = read.csv("products.csv")
 
-## Viewing the table
+##1.2 Viewing the table
 View(orderItems)
 View(products)
 
-## Checking na values 
+##1.3 Checking na values 
 colSums(is.na(products))
 colSums(is.na(orderItems))
 
-# Order item price histogram
+##1.4 Order item price histogram
 ggplot(orderItems) +
   geom_histogram(aes(price), bins = 30)
 
-# Mean and Median of the price
+#1.5 Mean and Median of the price
 meanPrice = mean(orderItems$price)
 cat("The mean price is", meanPrice, "\n")
 medianPrice = median(orderItems$price)
 cat("The median price is", medianPrice)
 
-## joining orderItems and Products 
+##2.1 joining orderItems and Products 
 orderProduct = orderItems %>%
                 left_join(
                   products,
@@ -87,12 +85,13 @@ orderProduct = orderItems %>%
 drop_na(product_weight_g, freight_value)
 orderProduct
 
-# Viewing orderProduct
+##2.2 Viewing orderProduct
 View(orderProduct)
-# checking na
+
+##2.3 checking na
 colSums(is.na(orderProduct))
 
-## Scatter plot
+##2.4 Scatter plot
 ggplot(orderProduct) +
   geom_point(aes(product_weight_g, freight_value))
 
@@ -103,13 +102,13 @@ ggplot(orderProduct) +
 - The mean  of the price is around 74.99.
 - The mean of the price is higher than the median, this means that the high price of the product may be pulling the average upwards.
 
-The histogram show indication that most product are leaning towards lower prices while there is only small amount of product that is in very high priced.
+- The histogram show indication that most product are leaning towards lower prices while there is only small amount of product that is in very high priced.
 
-There is an indication that there is a product_weight_g that has no values (exactly 18 after joining) meaning we need to erase it because we need both values to examine the relationship, without the product weight the observations cannot provide a complete coordinates for the visualization.
+- There is an indication that there is a product_weight_g that has no values (exactly 18 after joining) meaning we need to erase it because we need both values to examine the relationship, without the product weight the observations cannot provide a complete coordinates for the visualization.
 
-The relationship attribute between order_items and products are product weight and freight values, we want to see if the freight values depends on the product weight or not.
+- The relationship attribute between order_items and products are product weight and freight values, we want to see if the freight values depends on the product weight or not.
 
-The scatter plot show no linear relationship pattern. In conclusion, there is no  significant relationship between the product weight and the freight value, the product weight does not affect the freight value.
+- The scatter plot show no linear relationship pattern. In conclusion, there is no  significant relationship between the product weight and the freight value, the product weight does not affect the freight value.
 
 ### Task 2 Orders That Were Not Delivered
 - Count the number of orders in each order status and the percentage of all orders,
@@ -123,13 +122,13 @@ delivered in each customer state, and show it in a bar chart.
 - Explain your findings.
 
 Rationale:
-In task the first thing i was given is to count the number of orders in each order status, in which i first view the tables first to observed the attribute using View(), and checking if there is any missing values with colSums(is.na()). i use tidyverse and dplyr (just in case my computer block any .dll files in tidyverse).
+- In task the first thing i was given is to count the number of orders in each order status, in which i first view the tables first to observed the attribute using View(), and checking if there is any missing values with colSums(is.na()). i use tidyverse and dplyr (just in case my computer block any .dll files in tidyverse).
 
-in every data i will check if there is any NA values or not 
+- in every data i will check if there is any NA values or not 
 
-After counting it i convert it into a percentage(orderStatPercent) to examine the distribution of percentage across each state, i visualized the distribution with a bar chart(geom_col = because it is between a categorical variable and numerical variable). I choose to add numbers off percentage of the delivered order and the undelivered for all orders.
+-  counting it i convert it into a percentage(orderStatPercent) to examine the distribution of percentage across each state, i visualized the distribution with a bar chart(geom_col = because it is between a categorical variable and numerical variable). I choose to add numbers off percentage of the delivered order and the undelivered for all orders.
 
-The join orders and customers i was tasked to calculate the percentage of the undelivered order in each state
+-  join orders and customers i was tasked to calculate the percentage of the undelivered order in each state
 in which i also use geom_col and grouping the order by state and then calculate the percentage for each state so that there is no biased distribution.
 
 ```{r}
@@ -137,34 +136,34 @@ library(ggplot2)
 library(tidyverse)
 library(dplyr)
 
-## dataset
+##1.1 dataset
 order = read.csv("orders.csv")
 customer = read.csv("customers.csv")
 
-## Viewing the dataset
+##1.2 Viewing the dataset
 View(order)
 View(customer)
 
-## Checking na values
+##1.3 Checking na values
 colSums(is.na(order))
 colSums(is.na(customer)) ## because there is no NA then we don't need to drop any NA values
 
-## counting number of orders 
+##1.4 counting number of orders 
 orderCountStat = order%>%
   count(order_status)
 orderCountStat
 
-# order status percentage for each status
+##1.5 order status percentage for each status
 orderStatPercent = order %>% 
                       count(order_status) %>%
                       mutate(percentage = n / sum(n) * 100)
 orderStatPercent 
 
-# Visualize order status percentage with bar chart
+##1.6 Visualize order status percentage with bar chart
 ggplot (orderStatPercent) +
   geom_col(aes(order_status, percentage))
 
-#  order status percentage for all status that are delivered 
+##1.7  order status percentage for all status that are delivered 
 orderDelper = order %>% 
             summarise(
               Del = sum(order_status == "delivered"),
@@ -173,7 +172,7 @@ orderDelper = order %>%
               )
 orderDelper
 
-# order status percentage for all status that are not delivered
+##1.8 order status percentage for all status that are not delivered
 orderNotDelper = order %>% 
                       summarise(
                         notDel = sum(order_status != "delivered"), 
@@ -182,7 +181,7 @@ orderNotDelper = order %>%
                       )
 orderNotDelper
 
-## Join orders.csv and customers.csv and checking 
+##2.1 Join orders.csv and customers.csv and checking 
 orderCus = order %>% 
             inner_join(
               customer, 
@@ -191,10 +190,10 @@ orderCus = order %>%
             select(order_status, customer_state)
 orderCus
 
-# checking for na values 
+#2.2 checking for na values 
 colSums(is.na(orderCus)) ## because there is no NA then we don't need to drop any NA values
 
-## Order percentage not delivered in each state
+##2.3 Order percentage not delivered in each state
 
 orderCusPerNotDel = orderCus %>% 
                     group_by(customer_state) %>%
@@ -205,7 +204,7 @@ orderCusPerNotDel = orderCus %>%
 
 orderCusPerNotDel
 
-## Order percentage not delivered in each state
+##2.4 Order percentage not delivered in each state
 orderCusPerDel = orderCus %>% 
                     group_by(customer_state) %>%
                     summarise(
@@ -215,55 +214,79 @@ orderCusPerDel = orderCus %>%
 
 orderCusPerDel
 
-## Visualise in the bar chart 
+##2.5 Visualise in the bar chart 
 ggplot(orderCusPerNotDel) +
   geom_col(aes(customer_state, percentage))
 
 ```
 ### Explanation 
-The percentage of the delivered is approximately 97 percent, the least percentage of the undelivered section falls on approve at about 0.002 percent. Followed by the bar plot show a significant different between the number delivered and undelivered order.
+- The percentage of the delivered is approximately 97 percent, the least percentage of the undelivered section falls on approve at about 0.002 percent. Followed by the bar plot show a significant different between the number delivered and undelivered order.
 
-The percentage of order status that are not delivered is about 2.97 percent.
+- The percentage of order status that are not delivered is about 2.97 percent.
 
-The percentage of customer state that order got the most of the undelivered product located in RR and the least undelivered was AC
+- The percentage of customer state that order got the most of the undelivered product located in RR and the least undelivered was AC
 
-The distribution from the percentage was very biased because each state did not get the same amount of orders so a number from one state could lead to a higher percentage but very low undelivered order while other state low percentage but a very high undelivered order. 
+-  distribution from the percentage was very biased because each state did not get the same amount of orders so a number from one state could lead to a higher percentage but very low undelivered order while other state low percentage but a very high undelivered order. 
 
 
 
 ### Task 3 Payment Methods 
 - Analyse the usage frequency of each payment type (number and percentage of
-payments), and visualise it with a bar chart.
+payments), and visualize it with a bar chart.
 
-- Compare the payment values of the different payment types with a boxplot. Which
+- Compare the payment values of the different payment types with a box plot. Which
 payment types are used for larger or smaller amounts?
 
 - Explain your findings.
+
+Rationale:
+
+<u>I want to identify the payment method that is identifiable<u> 
+
+First i will View the data set to see the data and the attributes provided.
+For the first thing in the task is to count the frequency of each payment type and then find the percentage and use bar chart to visualized it. 
+ 
+I will also check for any Na value.
+
+Visualizing the difference in payment types with payment values using a box plot and identify which payment types are used for larger or smaller amounts 
 ```{r}
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
 
-## dataset 
+##1.1 data set 
 payment = read.csv("payments.csv")
 
-## Viewing the dataset 
+##2.1 Viewing the data set 
 View(payment)
 
-# payment percentage of each payment type 
+##3.1 checking if there is any NA values 
+colSums(is.na(payment)) ## because there is no NA then we don't need to drop any NA values
+
+##4.1 The usage frequency of each payment type
 payment %>%
   count(payment_type)
 
+#or
 
+payment %>% 
+  group_by(payment_type) %>%
+  summarise(
+    total = n())
+                  
+##5.1 payment percentage of each payment type 
 payTypePercent = payment %>% 
                   count(payment_type) %>%
-                  mutate(
-                    percentage = n / sum(n) * 100
-                  ) 
+                  mutate(percentage = n / sum(n) * 100) 
 
 payTypePercent
 
-### excluding not_define payment type because it does not have any values
+##6.1 checking which payment method has thee payment value of 0
+payment %>%
+  filter(payment_value == 0)%>%
+  select(payment_type) ## from here we know that it is voucher and not_defined category 
+
+##7.1 excluding not_define payment type because it does not have any values of payments.
 payTypePercent = payment %>% 
                   filter(payment_type != "not_defined") %>%
                   count(payment_type) %>%
@@ -273,31 +296,50 @@ payTypePercent = payment %>%
 
 payTypePercent
 
-# Visualise using barplot 
+##8.1 Visualize the percentage using bar plot 
 ggplot(payTypePercent) +
   geom_col(aes(payment_type, percentage))
 
 
-## Compare the payment values of the different payment types with a boxplot. Which
-## payment types are used for larger or smaller amounts?
-View(payment %>%
-  count(payment_type))
-
+##1.2 Compare the payment values of the different payment types with a box plot. Which payment types are used for larger or smaller amounts?
 ggplot(payment)+
   geom_boxplot(aes(payment_type, payment_value))
 
+##1.2 We use scale log to see a better visualization of the box plot (not flat)
 ggplot(payment)+
   geom_boxplot(aes(payment_type, payment_value)) +
   scale_y_log10()
 
+##2.2 because the graphs has warning about producing infinite value that mean we need to remove the rows that produces zero only 
+
+#checking which payment method has the payment value of 0
+payment %>%
+  filter(payment_value == 0)%>%
+  select(payment_type) ## from here we know that it is voucher and not_defined category 
+
+##3.2 we remove the not define and voucher that contains 0  which cause the infinite value during the log transformation 
+paymentNot0 = payment %>% 
+                filter(
+                  (payment_type != "voucher" & payment_value != 0) | 
+                  (payment_type != "not_defined" & payment_value != 0))
+
+##4.2 Visualizing the final data 
+ggplot(paymentNot0)+
+  geom_boxplot(aes(payment_type, payment_value)) +
+  scale_y_log10()
+
+
 ```
 
-## Explanation 
+## Explanation
 
-from the frequency of the payment type we can see that most people prefer to use credit card the most 
-in the box plot we can see that most people who pays the most is in the credit card 
+- Based from the analysis of the frequency distribution, credit card is the most used payment type. Although not_define was initially appears to have the lowest frequency, all records associated with this category have a payment value of zero. Therefore, it is excluded from the analysis to focus on the actual payment methods. Among the distribution debit card has the lowest frequency of use.  
+
+- The payment percentage shows indication about 73.93 percent of payment as done by credit card and 1.47 percent on debit card
+
+- in the box plot we can see that most people who pays the most is in the credit card 
 the reason why these is so many outliers is because the gap between the amount that people pay is so high 
-the most transaction made by the people are concentrated the most in lower value 
-the highest max transaction is 13664 in credit card and the least max is 0 in not define 
-which means the payment method are not define so does the total amount they pay 
+
+- The most transaction made by the people are concentrated the most in lower value 
+the highest max value transaction amount is 13,664 recorded in credit card and the minimum is not_define at zero, but since we exclude not_define because it is not represent as an identifiable payment method, 
 
