@@ -77,6 +77,15 @@ ggplot(orderItems) +
     title = " The Frequency Price"
   )
 
+
+##1.4 Order item price histogram, adding scale log to have a better visualization 
+ggplot(orderItems) +
+  geom_histogram(aes(price), bins = 30) +
+  labs(
+    x = "Price",
+    title = " The Frequency Price"
+  ) + scale_x_log10()
+
 #1.5 Mean and Median of the price
 meanPrice = mean(orderItems$price)
 cat("The mean price is", meanPrice, "\n")
