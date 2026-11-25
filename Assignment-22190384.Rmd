@@ -52,7 +52,7 @@ Rationale:
 - In the histogram i used 30 bins to divide the price value into groups, allowing me to observe the distribution pattern 
 - To joining the data set i used left_join() to combine the order_items(freight_value) and product(product_weight_g) based on their common product_id, I chose this method because i want to preserved all records from order_items i want to analyse whether if there is a freight_value without product_weight or not, in other word it allows me to investigate their relationship
 - at the end i visualized it using a scatter plot
-```{r}
+```{r, warning = FALSE}
 library (ggplot2)
 library (tidyverse)
 library (dplyr)
@@ -78,7 +78,7 @@ ggplot(orderItems) +
   )
 
 
-##1.4 Order item price histogram, adding scale log to have a better visualization 
+##1.4 Order item price histogram, adding scale log to have a better visualization  
 ggplot(orderItems) +
   geom_histogram(aes(price), bins = 30) +
   labs(
@@ -100,7 +100,7 @@ orderProduct = orderItems %>%
                 select(product_weight_g, freight_value) %>% 
 ## dropping the missing value because they cannot be used to examine the relationship  
 drop_na(product_weight_g, freight_value)
-orderProduct
+
 
 ##2.2 Viewing orderProduct
 View(orderProduct)
@@ -154,7 +154,7 @@ Rationale:
 -  Join orders and customers i was tasked to calculate the percentage of the undelivered order in each state
 in which i also use geom_col and grouping the order by state and then calculate the percentage for each state so that there is no biased distribution.
 
-```{r}
+```{r, warning = FALSE}
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
@@ -216,7 +216,6 @@ orderCus = order %>%
               by = "customer_id"
             ) %>%
             select(order_status, customer_state)
-orderCus
 
 #2.2 checking for na values 
 colSums(is.na(orderCus)) ## because there is no NA then we don't need to drop any NA values
@@ -239,8 +238,6 @@ orderCusPerDel = orderCus %>%
                       Del = sum(order_status == "delivered"), 
                       sumsOrder = n(),
                       percentage = Del / sumsOrder * 100) 
-
-orderCusPerDel
 
 ##2.5 Visualise in the bar chart 
 ggplot(orderCusPerNotDel) +
@@ -358,7 +355,7 @@ ggplot(payment)+
   labs(
     x = "Payment Type",
     y = "Paymnet Value",
-    title = "Distributuin of Payment Value with Paymnet Type"
+    title = "Distributing of Payment Value with Paymnet Type"
   )
 
 ##2.2 because the graphs has warning about producing infinite value that mean we need to remove the rows that produces zero only 
@@ -380,7 +377,7 @@ ggplot(paymentNot0)+
   labs(
     x = "Payment Type",
     y = "Paymnet Value",
-    title = "Distributuin of Payment Value with Paymnet Type" 
+    title = "Distributing of Payment Value with Paymnet Type" 
   )
 ```
 ## Explanation
