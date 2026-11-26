@@ -34,7 +34,7 @@ retain a copy on its database for future plagiarism checking).
 
 - I hereby certify that I have read and understand what the School of Computing, Data Science and Mathematics defines as minor and substantial breaches of misconduct as outlined in the learning guide for this unit.
 
-Signature: <img src="Downloads/signature.png"> Date: 25 - November - 2026
+Signature: ![Signature]("C:/Users/MyKenzie/Downloads/signature.png") Date: 25 - November - 2026
 
 ### Task 1 Product Prices and Shipping Cost
 - Visualize the distribution of item prices in order_items.csv with a histogram, and
